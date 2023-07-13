@@ -1,11 +1,14 @@
 "use client";
 import { useRef, useEffect } from "react";
 import SVG from "react-inlinesvg";
+
 const ChatInput = () => {
   const inputRef = useRef(null);
+
   useEffect(() => {
     inputRef.current.focus();
   }, []);
+
   return (
     <div className="sticky bottom-0 py-3 px-10 flex gap-5">
       <div className="flex gap-5 items-center">

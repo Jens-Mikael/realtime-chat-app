@@ -16,7 +16,7 @@ const ContactCard = ({ img, name, lastText, notify, selected }) => {
         <img src={img} className="h-14 min-w-[56px] rounded-full" />
       </div>
       <div className="w-full max-w-[252px]">
-        <div className="font-light text-lg">{name}</div>
+        <div className="font-light text-lg truncate">{name}</div>
         <div className={`text-sm transition truncate ${isSelected ? "text-white text-opacity-90" : "text-[#aaaaaa]"}`}>{lastText}</div>
       </div>
       <div

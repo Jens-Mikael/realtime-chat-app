@@ -11,14 +11,12 @@ export default function Auth() {
   if (!loading && currentUser) redirect("/");
 
   const handleAuth = async () => {
-    try {
-      const res = await googleAuth();
-
-      if (res) console.log("succeeded");
-    } catch (err) {
-      console.log(err.message);
-      setErr(err.message);
-    }
+    const user = await googleAuth();
+    if (user) {
+      console.log(user); 
+      const resFromWrite = await writeUserData(user);
+      console.log(resFromWrite);
+    } else console.log("did not run")
   };
 
   if (!loading)
@@ -34,7 +32,7 @@ export default function Auth() {
           </div>
           {err && <div>{err}</div>}
           <button
-            onClick={handleAuth}
+          onClick={() => googleAuth()}
             className="bg-white py-2.5 rounded-lg border border-slate-400 w-full dark:border-none flex justify-center text-center grow hover:scale-105 transition cursor-pointer"
           >
             <SVG

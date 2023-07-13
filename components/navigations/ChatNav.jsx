@@ -3,6 +3,7 @@ import SVG from "react-inlinesvg";
 const ChatNav = ({ userData }) => {
   return (
     <div className="sticky top-0 w-full z-10">
+
       <div className="flex justify-between items-center bg-[#001d29] py-3 px-5">
         <div className="flex gap-5 items-center">
           <img

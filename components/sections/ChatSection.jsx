@@ -1,5 +1,5 @@
 import ChatInput from "../ChatInput";
-import Messages from "../Messages";
+import MessageSection from "./MessageSection";
 import ChatNav from "../navigations/ChatNav";
 
 const ChatSection = () => {
@@ -14,7 +14,7 @@ const ChatSection = () => {
   return (
     <div className="grow border relative gap-2 flex flex-col border-white border-opacity-20 scrollbar-none overflow-y-auto rounded-lg">
       <ChatNav userData={userData} messages={messages} />
-      <Messages />
+      <MessageSection />
       <ChatInput />
     </div>
   );

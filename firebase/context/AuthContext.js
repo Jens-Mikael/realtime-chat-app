@@ -5,6 +5,7 @@ import {
   GoogleAuthProvider,
   signOut,
   onAuthStateChanged,
+  getAdditionalUserInfo,
 } from "firebase/auth";
 import { createContext } from "react";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -25,7 +26,18 @@ export const AuthProvider = ({ children }) => {
 
   const googleAuth = async () => {
     const googleProvider = new GoogleAuthProvider();
-    return signInWithPopup(auth, googleProvider);
+    try {
+      const res = await signInWithPopup(auth, googleProvider);
+      if (res) {
+        //const credentials = GoogleAuthProvider.credentialFromResult(res);
+        //const additionalUserInfo = getAdditionalUserInfo(res);
+        //const token = credentials.accessToken;
+        const user = res.user;
+        return user;
+      }
+    } catch (err) {
+      return err;
+    }
   };
 
   const logout = async () => {
@@ -37,7 +49,7 @@ export const AuthProvider = ({ children }) => {
       setCurrentUser(user);
       setLoading(false);
     });
-    return ;
+    return;
   }, []);
 
   const value = {
@@ -48,9 +60,5 @@ export const AuthProvider = ({ children }) => {
     userInfo,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
