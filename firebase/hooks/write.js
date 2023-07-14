@@ -34,10 +34,12 @@ export const acceptContactRequest = async (currentUser, acceptedUser) => {
   const acceptedUserRef = doc(firestore, `users/${acceptedUser}`);
   const chatRef = ref(rtdb, `chats`);
   const chatData = {
-    isGroup: false,
-    uids: {
-      1: currentUser,
-      2: acceptedUser,
+    info: {
+      isGroup: false,
+      uids: {
+        1: currentUser,
+        2: acceptedUser,
+      },
     },
   };
   const batch = writeBatch(firestore);
@@ -64,7 +66,7 @@ export const acceptContactRequest = async (currentUser, acceptedUser) => {
 
     const batchRes = await batch.commit();
 
-    return batchRes
+    return batchRes;
   } catch (err) {
     return err;
   }
@@ -81,29 +83,5 @@ export const writeMessage = async () => {
   }
 };
 
-export const writeUserData = async (user) => {
-  const jsonData = {
-    name: user.displayName,
-    email: user.email,
-    imgUrl: user.photoURL,
-  };
 
-  try {
-    const res = await set(ref(rtdb, `users/${user.uid}/data`), jsonData);
 
-    return res;
-  } catch (err) {
-    return err.message;
-  }
-};
-
-export const testWrite = async (user, chat) => {
-  const jsonData = {};
-
-  try {
-    const key = await push(ref(rtdb, `users/${user.uid}/chats`), chat);
-    return key;
-  } catch (err) {
-    return err;
-  }
-};

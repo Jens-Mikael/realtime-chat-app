@@ -9,7 +9,7 @@ import UserCard from "../cards/UserCard";
 import { useAuth } from "@/firebase/context/AuthContext";
 
 const NewContactAction = () => {
-  const { currentUser } = useAuth();
+  const { uid } = useAuth();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [error, setError] = useState("");
@@ -26,7 +26,7 @@ const NewContactAction = () => {
       functions,
       "getUserAddableContacts"
     );
-    getUserAddableContacts({ uid: currentUser.uid })
+    getUserAddableContacts({ uid: uid })
       .then((res) => {
         setData(res.data);
         setLoading(false);

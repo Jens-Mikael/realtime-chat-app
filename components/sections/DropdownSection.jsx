@@ -8,36 +8,34 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { readUserRequestsOnLoad } from "@/firebase/hooks/read";
 
 const DropdownSection = ({ isDropdownOpen }) => {
-  const { currentUser } = useAuth();
+  const { uid } = useAuth();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    userRequestInit();
-    usersRequestsRT();
-  }, []);
-
-  //listen for rt updates
-  const usersRequestsRT = () => {
-    if (currentUser) {
-      onSnapshot(doc(firestore, `users/${currentUser.uid}`), (doc) => {
-        setData(doc.data().requests);
-      });
+    //userRequestInit();
+    if (uid) {
+      //listen for rt updates
+      const usersRequestsListener = onSnapshot(
+        doc(firestore, `users/${uid}`),
+        (doc) => {
+          setData(doc.data().requests);
+        }
+      );
     }
-  };
+  }, [uid]);
 
-  const userRequestInit = async () => {
-    if (loading) {
-      const res = await readUserRequestsOnLoad();
-      if (res) {
-        console.log(res);
-        setData(res);
-      }
-      setLoading(false);
-    }
-  };
-
-  if (loading) return <div>loading...</div>;
+  // const userRequestInit = async () => {
+  //   if (loading) {
+  //     const res = await readUserRequestsOnLoad();
+  //     if (res) {
+  //       console.log(res);
+  //       setData(res);
+  //     }
+  //     //setLoading(false);
+  //   }
+  // };
+  //if (loading) return <div>loading...</div>;
 
   return (
     <div

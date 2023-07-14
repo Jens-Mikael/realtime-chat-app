@@ -9,7 +9,7 @@ const NewBtn = () => {
     <>
       <div
         onClick={() => setIsNewSectionOpen(true)}
-        className="bg-white sticky bottom-5 mr-5 z-20 rounded-full bg-opacity-20 hover:bg-opacity-100 p-3 self-end hover:scale-105 shadow-2xl hover:shadow-glow hover:shadow-cyan-400 hover:bg-cyan-400 transition cursor-pointer"
+        className="bg-white mt-5 sticky bottom-5 mr-5 z-20 rounded-full bg-opacity-20 hover:bg-opacity-100 p-3 self-end hover:scale-105 shadow-2xl hover:shadow-glow hover:shadow-cyan-400 hover:bg-cyan-400 transition cursor-pointer"
       >
         <SVG
           src="icons/remove.svg"

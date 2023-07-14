@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^1.9.5",
     "autoprefixer": "10.4.14",
     "encoding": "^0.1.13",
     "eslint": "^8.44.0",
@@ -22,6 +23,7 @@
     "react-dom": "18.2.0",
     "react-firebase-hooks": "^5.1.1",
     "react-inlinesvg": "^3.0.2",
+    "react-redux": "^8.1.1",
     "tailwindcss": "^3.3.2"
   }
 }

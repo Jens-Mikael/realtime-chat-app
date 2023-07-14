@@ -11,14 +11,11 @@ const ContactSection = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
   const [chatsData, setChatsData] = useState([]);
-  const { currentUser } = useAuth();
+  const { uid } = useAuth();
 
   useEffect(() => {
-    console.log("ran")
-
-    getChatsData();
-  }, [])
-
+    if (uid) getChatsData();
+  }, [uid]);
 
   const handleCloseDropdownOnScroll = () => {
     const container = document.getElementById("mainContainer");
@@ -45,15 +42,9 @@ const ContactSection = () => {
   };
 
   const getChatsData = async () => {
-    if (!currentUser) return
-    const data = await readUserChats(currentUser.uid)
-    console.log(data);
-    
+    const data = await readUserChats(uid);
+    setChatsData(data);
   };
-
-  console.log("jh ")
-
-  
 
   return (
     <div
@@ -62,7 +53,7 @@ const ContactSection = () => {
         if (isDropdownOpen) handleCloseDropdownOnScroll();
       }}
       scrol
-      className="flex flex-col relative rounded-lg border overflow-y-auto scrollbar-none border-white border-opacity-20"
+      className="flex flex-col w-full max-w-[450px] relative rounded-lg border h-fit overflow-y-auto scrollbar-none border-white border-opacity-20"
     >
       <DropdownSection isDropdownOpen={isDropdownOpen} />
 
@@ -74,84 +65,15 @@ const ContactSection = () => {
         />
 
         <div className="flex flex-col gap-3 p-5 pt-0 flex-1 z-20 bg-[#001d29]">
-          <ContactCard
-            img="images/hamza.jpeg"
-            name="Hamza Ahmed"
-            lastText="Bro check this out real quick becaus tis"
-            notify={true}
-          />
-          <ContactCard
-            img="images/hamza.jpeg"
-            name="Hamza Ahmed"
-            lastText="Bro check this out real quick becaus tis"
-            notify={true}
-          />
-          <ContactCard
-            img="images/hamza.jpeg"
-            name="Hamza Ahmed"
-            lastText="Bro check this out real quick becaus tis"
-            notify={true}
-          />
-          <ContactCard
-            img="images/hamza.jpeg"
-            name="Hamza Ahmed"
-            lastText="Bro check this out real quick becaus tis"
-            notify={true}
-          />
-          <ContactCard
-            img="images/hamza.jpeg"
-            name="Hamza Ahmed"
-            lastText="Bro check this out real quick becaus tis"
-            notify={true}
-          />
-          <ContactCard
-            img="images/hamza.jpeg"
-            name="Hamza Ahmed"
-            lastText="Bro check this out real quick becaus tis"
-            notify={true}
-          />
-          <ContactCard
-            img="images/hamza.jpeg"
-            name="Hamza Ahmed"
-            lastText="Bro check this out real quick becaus tis"
-            notify={true}
-          />
-          <ContactCard
-            img="images/hamza.jpeg"
-            name="Hamza Ahmed"
-            lastText="Bro check this out real quick becaus tis"
-            notify={true}
-          />
-          <ContactCard
-            img="images/hamza.jpeg"
-            name="Hamza Ahmed"
-            lastText="Bro check this out real quick becaus tis"
-            notify={true}
-          />
-          <ContactCard
-            img="images/hamza.jpeg"
-            name="Hamza Ahmed"
-            lastText="Bro check this out real quick becaus tis"
-            notify={true}
-          />
-          <ContactCard
-            img="images/hamza.jpeg"
-            name="Hamza Ahmed"
-            lastText="Bro check this out real quick becaus tis"
-            notify={true}
-          />
-          <ContactCard
-            img="images/hamza.jpeg"
-            name="Hamza Ahmed"
-            lastText="Bro check this out real quick becaus tis"
-            notify={true}
-          />
-          <ContactCard
-            img="images/hamza.jpeg"
-            name="Hamza Ahmed"
-            lastText="Bro check this out real quick becaus tis"
-            notify={true}
-          />
+          {chatsData.map((obj) => (
+            <ContactCard
+              info={obj.info}
+              lastMessage={obj.lastMessage}
+              currentUid={uid}
+              chatKey={obj.chatKey}
+              key={obj.chatKey}
+            />
+          ))}
         </div>
       </div>
       <NewBtn />

@@ -18,6 +18,7 @@ export function useAuth() {
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
+  const [uid, setUid] = useState("");
   const [loading, setLoading] = useState(true);
 
   const userInfo = useRef();
@@ -47,6 +48,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
+      if (user) setUid(user.uid);
       setLoading(false);
     });
     return;
@@ -54,11 +56,10 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     currentUser,
+    uid,
     googleAuth,
     logout,
     loading,
-    userInfo,
   };
-
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
