@@ -49,11 +49,9 @@ const DropdownSection = ({ isDropdownOpen }) => {
         <div className="flex flex-col gap-3 pb-5 px-5 flex-1">
           {data.map((i) => (
             <DropdownCard
-              name={i.name}
-              photoURL={i.photoURL}
-              uid={i.uid}
-              currentUserUID={currentUser.uid}
-              key={i.uid}
+              data={i}
+              requestType={i.requestType}
+              key={i.uid ? i.uid : i.admin.uid}
             />
           ))}
         </div>

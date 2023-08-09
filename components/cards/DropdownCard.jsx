@@ -1,10 +1,10 @@
 //"use client"
 import { acceptContactRequest } from "@/firebase/hooks/write";
 
-const DropdownCard = ({ name, photoURL, uid, currentUserUID }) => {
+const DropdownCard = ({ data, requestType }) => {
   const handleAccept = async () => {
     const res = await acceptContactRequest(currentUserUID, uid);
-    console.log(res)
+    console.log(res);
   };
 
   return (
@@ -12,13 +12,32 @@ const DropdownCard = ({ name, photoURL, uid, currentUserUID }) => {
       className={`flex relative items-center py-3 px-5 gap-5 rounded-lg w-[400px] transition bg-white bg-opacity-5`}
     >
       <div>
-        <img src={photoURL} className="h-14 min-w-[56px] rounded-full" />
+        <img
+          src={
+            requestType === "contact"
+              ? data.photoURL
+              : data.displayData.photoURL
+          }
+          className="h-14 min-w-[56px] rounded-full"
+        />
       </div>
       <div className="w-full max-w-[200px] flex flex-col">
-        <div className="text-xs font-light text-[#aaaaaa]">
-          New contact request from
-        </div>
-        <div className="font-medium text-base truncate">{name}</div>
+        {requestType === "contact" ? (
+          <>
+            <div className="text-xs font-light text-[#aaaaaa]">
+              New Contact request from
+            </div>
+            <div className="font-medium text-base truncate">{data.name}</div>
+          </>
+        ) : (
+          <>
+            <div className="text-xs font-light text-[#aaaaaa]">
+              <span className="font-medium text-sm">{data.admin.displayName}</span>{" "}
+              invited you to the group {" "}
+              <span className="font-medium text-sm">"{data.displayData.title}"</span>.
+            </div>
+          </>
+        )}
       </div>
       <div className="text-sm gap-1 flex flex-col">
         <button

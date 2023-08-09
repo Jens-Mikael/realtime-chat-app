@@ -2,6 +2,7 @@
 import SVG from "react-inlinesvg";
 import { useState } from "react";
 import NewContactAction from "../actions/NewContactAction";
+import NewGroupAction from "../actions/NewGroupAction";
 const NewSection = ({ closeSection }) => {
   const [action, setAction] = useState("");
 
@@ -70,8 +71,8 @@ const NewSection = ({ closeSection }) => {
             </>
           )}
 
-          {/* NEW CONTACT */}
           {action === "newContact" && <NewContactAction />}
+          {action === "newGroup" && <NewGroupAction closeSection={closeSection} />}
         </div>
       </div>
     </div>

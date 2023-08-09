@@ -21,7 +21,7 @@ const NewContactAction = () => {
   //fetch users that are addable;
   const handleGetUsers = () => {
     const functions = getFunctions();
-    connectFunctionsEmulator(functions, "127.0.0.1", 5001);
+    //connectFunctionsEmulator(functions, "127.0.0.1", 5001);
     const getUserAddableContacts = httpsCallable(
       functions,
       "getUserAddableContacts"
@@ -50,6 +50,7 @@ const NewContactAction = () => {
             name={i.name}
             photoURL={i.photoURL}
             uid={i.uid}
+            action="newContact"
             key={i.uid}
           />
         ))}

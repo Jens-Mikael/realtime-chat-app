@@ -1,64 +1,59 @@
+"use client";
+import { useEffect, useState } from "react";
 import MessageCard from "../cards/MessageCard";
+import { limitToLast, onValue, query, ref } from "firebase/database";
+import { rtdb } from "@/firebase/config";
+import { useAuth } from "@/firebase/context/AuthContext";
 
-const MessageSection = () => {
+const MessageSection = ({ chatKey, isGroup }) => {
+  const [messages, setMessages] = useState();
+  const [initFetched, setInitFetched] = useState(false);
+  const { uid } = useAuth();
+
+  useEffect(() => {
+    //if chatkey changes
+    setMessages(null);
+    setInitFetched(false);
+    const chatMessageRef = query(
+      ref(rtdb, `chats/${chatKey}/messages`),
+      limitToLast(100)
+    );
+    const chatMessagesListener = onValue(chatMessageRef, (snap) => {
+      if (snap.exists()) {
+        setMessages(snap.val());
+      }
+    });
+  }, [chatKey]);
+
+  useEffect(() => {
+    if (messages && !initFetched) {
+      const element = document.getElementById("scrollToElement");
+      element.scrollIntoView();
+      setInitFetched(true);
+    }
+  }, [messages]);
+
   return (
-    <div className="flex flex-col flex-1 gap-3 w-full px-5">
-      <MessageCard
-        content={{ text: "Heelo buys dis my message" }}
-        time="12:48"
-        isOwnMessage={true}
-      />
-      <MessageCard
-        content={{
-          text: "Heelo buys dis NOT my message viuehfviuhdsiuf vytzxfc  asdgcytasda asdcgatsdc asdgcatsdc tafsdc",
-        }}
-        time="12:50"
-        isOwnMessage={false}
-      />
-      <MessageCard
-        content={{
-          text: "Heelo buys dis NOT my message viuehfviuhdsiuf vytzxfc  asdgcytasda asdcgatsdc asdgcatsdc tafsdc",
-        }}
-        time="12:50"
-        isOwnMessage={true}
-      />
-      <MessageCard
-        content={{ text: "Heelo buys dis my message" }}
-        time="12:57"
-        isOwnMessage={true}
-      />
-      <MessageCard
-        content={{ text: "Heelo buys dis my message" }}
-        time="12:57"
-        isOwnMessage={true}
-      />
-      <MessageCard
-        content={{ text: "Heelo buys dis my message" }}
-        time="12:57"
-        isOwnMessage={true}
-      />
-      <MessageCard
-        content={{ text: "Heelo buys dis my message" }}
-        time="12:57"
-        isOwnMessage={true}
-      />
-      <MessageCard
-        content={{ text: "Heelo buys dis NOT my message" }}
-        time="12:50"
-        isOwnMessage={false}
-      />
-      <MessageCard
-        content={{ text: "Heelo buys dis NOT my message" }}
-        time="12:50"
-        isOwnMessage={false}
-      />
-      <MessageCard
-        content={{ text: "Heelo buys dis NOT my message" }}
-        time="12:50"
-        isOwnMessage={false}
-      />
+    <div
+      className={`flex flex-col flex-1 gap-3 w-full  ${
+        isGroup ? "pl-5 pr-16" : "px-16"
+      } `}
+    >
+      {messages &&
+        Object.keys(messages).map((key, index) => (
+          <MessageCard
+            content={messages[key].data}
+            sender={messages[key].sender}
+            currentUID={uid}
+            timeStamp={messages[key].timeStamp}
+            key={key}
+          />
+        ))}
+      <div id="scrollToElement" />
     </div>
   );
 };
 
 export default MessageSection;
+
+//

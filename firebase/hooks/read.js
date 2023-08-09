@@ -68,7 +68,8 @@ export const readUserChats = async (user) => {
             const userDoc = userDocSnap.data();
             //structure the data in to the main chats arr
             const newObj = {
-              info: {
+              isGroup: chatInfo.isGroup,
+              displayData: {
                 name: userDoc.name,
                 photoURL: userDoc.photoURL,
                 uid: arrWithoutCurrentUserID[0],
@@ -85,6 +86,35 @@ export const readUserChats = async (user) => {
   }
 };
 
-// chatsDataObj[i].lastMessage.data.text = lastMessage.data.text;
-// chatsDataObj[i].lastMessage.sender = lastMessage.sender;
-// chatsDataObj[i].lastMessage.timeStamp = lastMessage.timeStamp;
+export const readUserContacts = async (uid) => {
+  const docRef = doc(firestore, `users/${uid}`);
+  let userContacts;
+  let userContactsData = [];
+  try {
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      userContacts = docSnap
+        .data()
+        .contacts.filter((contact) => contact !== uid);
+      for (let i = 0; i < userContacts.length; i++) {
+        const docRef = doc(firestore, `users/${userContacts[i]}`);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists) {
+          const data = docSnap.data();
+          const userObj = {
+            uid: userContacts[i],
+            displayData: {
+              name: data.name,
+              photoURL: data.photoURL,
+            },
+          };
+          userContactsData.push(userObj);
+        }
+      }
+      return userContactsData;
+    }
+    return "User current user does not exists in firestore";
+  } catch (err) {
+    return err.message;
+  }
+};

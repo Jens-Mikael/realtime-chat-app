@@ -1,28 +1,19 @@
 "use client";
 import { useAuth } from "@/firebase/context/AuthContext";
-import { useEffect, useState } from "react";
 import { redirect } from "next/navigation";
 import ContactSection from "@/components/sections/ContactSection";
 import ChatSection from "@/components/sections/ChatSection";
-import { testWrite } from "@/firebase/hooks/write";
-import { readUserChats } from "@/firebase/hooks/read";
+import { useDispatch } from "react-redux";
+import { setCurrentChat } from "@/redux/slices/currentChatSlice";
 
 export default function Home() {
   const { currentUser, logout, loading } = useAuth();
+  const dispatch = useDispatch();
 
-  //fetch user chats on page load
-  useEffect(() => {
-    // if (currentUser && !loading) {
-    //   console.log("ran")
-    //   getUserChats();
-    // }
-  }, []);
-
-  const getUserChats = async () => {
-    const res = await readUserChats(currentUser);
-    console.log(res);
+  const handleLogout = async () => {
+    await logout();
+    dispatch(setCurrentChat(null));
   };
-
 
   if (!loading && !currentUser) redirect("/auth");
 
@@ -31,7 +22,7 @@ export default function Home() {
       <ContactSection />
       <ChatSection />
       <div className="flex flex-col gap-5">
-        <button className="border" onClick={logout}>
+        <button className="border" onClick={handleLogout}>
           logout
         </button>
         {/* <button className="border" onClick={writeToDd}>

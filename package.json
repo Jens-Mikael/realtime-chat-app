@@ -12,18 +12,20 @@
     "@reduxjs/toolkit": "^1.9.5",
     "autoprefixer": "10.4.14",
     "encoding": "^0.1.13",
-    "eslint": "^8.44.0",
+    "eslint": "^8.46.0",
     "eslint-config-next": "^12.0.4",
-    "firebase": "^9.23.0",
-    "firebase-tools": "^12.4.3",
+    "firebase": "^10.1.0",
+    "firebase-tools": "^0.1.6",
     "next": "^13.4.8",
     "node": "^20.3.1",
     "postcss": "8.4.24",
     "react": "^18.2.0",
     "react-dom": "18.2.0",
     "react-firebase-hooks": "^5.1.1",
+    "react-image-file-resizer": "^0.4.8",
     "react-inlinesvg": "^3.0.2",
     "react-redux": "^8.1.1",
+    "react-spinners": "^0.13.8",
     "tailwindcss": "^3.3.2"
   }
 }

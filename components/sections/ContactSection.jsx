@@ -65,12 +65,13 @@ const ContactSection = () => {
         />
 
         <div className="flex flex-col gap-3 p-5 pt-0 flex-1 z-20 bg-[#001d29]">
-          {chatsData.map((obj) => (
+          {chatsData && uid && chatsData.map((obj) => (
             <ContactCard
-              info={obj.info}
+              displayData={obj.displayData}
               lastMessage={obj.lastMessage}
               currentUid={uid}
               chatKey={obj.chatKey}
+              isGroup={obj.isGroup}
               key={obj.chatKey}
             />
           ))}

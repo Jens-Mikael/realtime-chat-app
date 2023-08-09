@@ -1,4 +1,14 @@
-const MessageCard = ({ content, time, isOwnMessage }) => {
+import { useSelector } from "react-redux";
+
+const MessageCard = ({ content, sender, timeStamp, currentUID }) => {
+  const isOwnMessage = sender.uid === currentUID;
+  const isGroup = useSelector((state) => state.currentChat.value.isGroup);
+  const date = new Date(timeStamp);
+  const hours = date.getHours().toString();
+  const minutes = date.getMinutes().toString();
+  const dateString = `${
+    hours.length <= 1 ? (!hours ? "00" : "0" + hours) : hours
+  }:${minutes.length <= 1 ? (!minutes ? "00" : "0" + minutes) : minutes}`;
   return (
     <div
       className={`p-2 rounded-2xl pr-16 relative max-w-2xl ${
@@ -8,7 +18,9 @@ const MessageCard = ({ content, time, isOwnMessage }) => {
       }`}
     >
       {content.text}
-      <div className="absolute bottom-1 right-3 text-xs font-light">{time}</div>
+      <div className="absolute bottom-1 right-3 text-xs font-light">
+        {dateString}
+      </div>
     </div>
   );
 };

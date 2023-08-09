@@ -3,16 +3,23 @@ import { setCurrentChat } from "@/redux/slices/currentChatSlice";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-const ContactCard = ({ info, lastMessage, currentUid, chatKey }) => {
+const ContactCard = ({
+  displayData,
+  lastMessage,
+  currentUid,
+  chatKey,
+  isGroup,
+}) => {
   const currentChat = useSelector((state) => state.currentChat.value);
   const dispatch = useDispatch();
-  const isSelected = currentChat.chatKey === chatKey;
+  const isSelected = currentChat && currentChat.chatKey === chatKey;
   const handleClick = () => {
     dispatch(
       setCurrentChat({
-        info,
+        displayData,
         currentUid,
         chatKey,
+        isGroup,
       })
     );
   };
@@ -27,16 +34,20 @@ const ContactCard = ({ info, lastMessage, currentUid, chatKey }) => {
       }`}
     >
       <div>
-        <img src={info.photoURL} className="h-14 min-w-[56px] rounded-full" />
+        <img
+          src={displayData.photoURL}
+          className="h-14 min-w-[56px] rounded-full"
+        />
       </div>
       <div className="w-full max-w-[252px]">
-        <div className="font-light text-lg truncate">{info.name}</div>
+        <div className="font-light text-lg truncate">{displayData.name}</div>
         <div
           className={`text-sm transition truncate ${
             isSelected ? "text-white text-opacity-90" : "text-[#aaaaaa]"
           }`}
         >
-          {"data" in lastMessage &&
+          {lastMessage &&
+            "data" in lastMessage &&
             `${lastMessage.sender === currentUid && "Me:"} ${
               lastMessage.data.text
             }`}
