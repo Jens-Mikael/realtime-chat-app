@@ -4,12 +4,15 @@ import Image from "next/image";
 import FileResizer from "react-image-file-resizer";
 import SVG from "react-inlinesvg";
 import { useAuth } from "@/firebase/context/AuthContext";
-import { readUserContacts } from "@/firebase/hooks/read";
+import { readUserContacts, readUserChats } from "@/firebase/hooks/read";
 import UserCard from "../cards/UserCard";
 import { createGroup } from "@/firebase/hooks/write";
 import { ClipLoader } from "react-spinners";
+import { useDispatch } from "react-redux";
+import { setChats } from "@/redux/slices/chatsSlice";
 
 const NewGroupAction = ({ closeSection }) => {
+  const dispatch = useDispatch();
   const { currentUser } = useAuth();
   const [file, setFile] = useState(null);
   const [image, setImage] = useState("");
@@ -48,7 +51,7 @@ const NewGroupAction = ({ closeSection }) => {
       );
     }
   };
-
+  
   const handleSubmit = async () => {
     setCreatingGroup(true);
     const res = await createGroup(currentUser, selectedUsers, {
@@ -78,7 +81,7 @@ const NewGroupAction = ({ closeSection }) => {
         </div>
         <button
           onClick={closeSection}
-          className="py-1 px-3 text-lg rounded-full hover:bg-white/10 bg-white/5 w-min transition cursor-pointer"
+          className="py-1 px-4 text-lg rounded-full hover:bg-white/10 bg-white/5 w-min transition cursor-pointer"
         >
           Close
         </button>

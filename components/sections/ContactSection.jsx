@@ -6,15 +6,31 @@ import { useEffect, useState } from "react";
 import DropdownSection from "./DropdownSection";
 import { readUserChats } from "@/firebase/hooks/read";
 import { useAuth } from "@/firebase/context/AuthContext";
+import { useDispatch, useSelector } from "react-redux";
+import { setChats } from "@/redux/slices/chatsSlice";
+import { firestore } from "../../firebase/config";
+import { doc, onSnapshot } from "firebase/firestore";
 
 const ContactSection = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
-  const [chatsData, setChatsData] = useState([]);
+  const [requestsData, setRequestsData] = useState([]);
   const { uid } = useAuth();
+  const chats = useSelector((state) => state.chats.value);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (uid) getChatsData();
+    if (uid) {
+      //listen for changes in currentuser doc
+      const usersRequestsListener = onSnapshot(
+        doc(firestore, `users/${uid}`),
+        async (doc) => {
+          setRequestsData(doc.data().requests);
+          const data = await readUserChats(uid, doc.data().chats);
+          dispatch(setChats(data));
+        }
+      );
+    }
   }, [uid]);
 
   const handleCloseDropdownOnScroll = () => {
@@ -41,10 +57,7 @@ const ContactSection = () => {
     });
   };
 
-  const getChatsData = async () => {
-    const data = await readUserChats(uid);
-    setChatsData(data);
-  };
+  console.log(chats)
 
   return (
     <div
@@ -53,28 +66,34 @@ const ContactSection = () => {
         if (isDropdownOpen) handleCloseDropdownOnScroll();
       }}
       scrol
-      className="flex flex-col w-full max-w-[450px] relative rounded-lg border h-fit overflow-y-auto scrollbar-none border-white border-opacity-20"
+      className="flex flex-col w-full max-w-[450px] max-h-full relative rounded-lg border h-fit overflow-y-auto scrollbar-none border-white border-opacity-20"
     >
-      <DropdownSection isDropdownOpen={isDropdownOpen} />
+      <DropdownSection
+        isDropdownOpen={isDropdownOpen}
+        requestsData={requestsData}
+      />
 
       <div className="bg-[#001d29] z-20">
         <ContactNav
+          requestNotification={requestsData.length}
           isDropdownOpen={isDropdownOpen}
           handleOpenDropdown={handleOpenDropdown}
           setIsDropdownOpen={setIsDropdownOpen}
         />
 
         <div className="flex flex-col gap-3 p-5 pt-0 flex-1 z-20 bg-[#001d29]">
-          {chatsData && uid && chatsData.map((obj) => (
-            <ContactCard
-              displayData={obj.displayData}
-              lastMessage={obj.lastMessage}
-              currentUid={uid}
-              chatKey={obj.chatKey}
-              isGroup={obj.isGroup}
-              key={obj.chatKey}
-            />
-          ))}
+          {chats &&
+            uid &&
+            chats.map((obj) => (
+              <ContactCard
+                displayData={obj.displayData}
+                lastMessage={obj.lastMessage}
+                currentUid={uid}
+                chatKey={obj.chatKey}
+                isGroup={obj.isGroup}
+                key={obj.chatKey}
+              />
+            ))}
         </div>
       </div>
       <NewBtn />

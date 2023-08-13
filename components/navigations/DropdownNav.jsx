@@ -1,9 +1,11 @@
 import SVG from "react-inlinesvg";
 
-const DropdownNav = ({ isDropdownOpen}) => {
+const DropdownNav = ({ isDropdownOpen,  }) => {
   return (
     <div className="sticky top-0 z-20">
-      <div className={`flex justify-between items-center  bg-[#001d29] z-10 py-3 px-5 transition-[height] `}>
+      <div
+        className={`flex justify-between items-center  bg-[#001d29] z-10 py-3 px-5 transition-[height] `}
+      >
         <div className=" text-3xl font-medium">Info</div>
         <div className="flex gap-2">
           <div className="cursor-pointer p-2 hover:bg-opacity-10 transition rounded-full bg-white bg-opacity-0">
@@ -14,7 +16,7 @@ const DropdownNav = ({ isDropdownOpen}) => {
             />
           </div>
           <div className="relative group">
-             <button
+            <button
               className={`cursor-pointer p-2 bg-opacity-0 hover:bg-opacity-10 transition rounded-full bg-white `}
             >
               <SVG

@@ -1,6 +1,7 @@
-import { ref, child, get, query, limitToLast } from "firebase/database";
-import { rtdb, firestore } from "../config";
+import { rtdb, firestore, storage } from "../config";
+import { ref, get, query, limitToLast } from "firebase/database";
 import { doc, getDoc } from "firebase/firestore";
+import { ref as storageRef, getDownloadURL } from "firebase/storage";
 
 export const readUserRequestsOnLoad = async (uid) => {
   const docRef = doc(firestore, `users/${uid}`);
@@ -14,7 +15,7 @@ export const readUserRequestsOnLoad = async (uid) => {
   }
 };
 
-export const readUserChats = async (user) => {
+export const readUserChats = async (user, currentuserChatsArr) => {
   const userDocRef = doc(firestore, `users/${user}`);
 
   try {
@@ -35,11 +36,13 @@ export const readUserChats = async (user) => {
       const lastMessageSnap = await get(lastMessageRef);
 
       if (lastMessageSnap.exists()) {
-        const lastMessage = lastMessageSnap.val();
+        const lastMessage =
+          lastMessageSnap.val()[Object.keys(lastMessageSnap.val())[0]];
         //push the data from the last sent message to the arr
         //ex: chatsDataObj[2].lastMessage.data.text
+
         chatsDataArr.push({
-          lastMessage: lastMessage[1],
+          lastMessage: lastMessage,
           chatKey: chatsArr[i],
         });
       } else {
@@ -53,6 +56,8 @@ export const readUserChats = async (user) => {
       if (chatInfoSnap.exists()) {
         const chatInfo = chatInfoSnap.val();
         //remember to think about what happends with group chats
+
+        //FOR PRIVATE CHATS
         if (!chatInfo.isGroup) {
           //filter out current uid
           const arrWithoutCurrentUserID = chatInfo.uids.filter(
@@ -77,6 +82,17 @@ export const readUserChats = async (user) => {
             };
             Object.assign(chatsDataArr[i], newObj);
           }
+        }
+        //FOR GROUPS
+        else {
+          const newObj = {
+            isGroup: chatInfo.isGroup,
+            displayData: {
+              name: chatInfo.displayData.title,
+              photoURL: chatInfo.displayData.photoURL,
+            },
+          };
+          Object.assign(chatsDataArr[i], newObj);
         }
       }
     }

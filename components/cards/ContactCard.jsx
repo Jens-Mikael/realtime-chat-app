@@ -1,7 +1,8 @@
 "use client";
 import { setCurrentChat } from "@/redux/slices/currentChatSlice";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import SVG from "react-inlinesvg";
 
 const ContactCard = ({
   displayData,
@@ -24,6 +25,12 @@ const ContactCard = ({
     );
   };
 
+  useEffect(() => {
+    if (isGroup) {
+    }
+  });
+  console.log(lastMessage)
+
   return (
     <div
       onClick={handleClick}
@@ -34,10 +41,20 @@ const ContactCard = ({
       }`}
     >
       <div>
-        <img
-          src={displayData.photoURL}
-          className="h-14 min-w-[56px] rounded-full"
-        />
+        {chatKey === "global" ? (
+          <>
+            <SVG
+              className="fill-white h-14 w-14"
+              src="icons/global.svg"
+              loader={<div className="h-14 w-14" />}
+            />
+          </>
+        ) : (
+          <img
+            src={displayData.photoURL}
+            className="h-14 w-14 min-w-[56px] rounded-full fill-white"
+          />
+        )}
       </div>
       <div className="w-full max-w-[252px]">
         <div className="font-light text-lg truncate">{displayData.name}</div>
@@ -48,7 +65,7 @@ const ContactCard = ({
         >
           {lastMessage &&
             "data" in lastMessage &&
-            `${lastMessage.sender === currentUid && "Me:"} ${
+            `${lastMessage.sender.uid === currentUid && "Me:"} ${
               lastMessage.data.text
             }`}
         </div>

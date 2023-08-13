@@ -27,6 +27,7 @@ const ChatSection = () => {
           <ChatNav
             displayData={currentChat.displayData}
             isGroup={currentChat.isGroup}
+            chatKey={currentChat.chatKey}
           />
           <MessageSection
             chatKey={currentChat.chatKey}

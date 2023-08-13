@@ -2,6 +2,7 @@
 import SVG from "react-inlinesvg";
 
 const ContactNav = ({
+  requestNotification,
   isDropdownOpen,
   handleOpenDropdown,
   setIsDropdownOpen,
@@ -45,6 +46,9 @@ const ContactNav = ({
                 className="h-7 fill-white"
                 loader={<div className="h-7 w-7" />}
               />
+              {requestNotification >= 1 && (
+                <div className="absolute top-1 right-0.5 text-xs rounded-full bg-sky-400 w-4 h-4">{requestNotification}</div>
+              )}
             </button>
           </div>
         </div>

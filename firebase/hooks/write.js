@@ -7,17 +7,21 @@ import {
   arrayRemove,
   writeBatch,
 } from "firebase/firestore";
-import { push, ref, serverTimestamp, set } from "firebase/database";
-import { uploadBytes, ref as storageRef } from "firebase/storage";
+import { push, ref, serverTimestamp, set, update } from "firebase/database";
+import {
+  uploadBytes,
+  ref as storageRef,
+  getDownloadURL,
+} from "firebase/storage";
 
 export const writeContactRequest = async (currentUser, toUser) => {
   const data = {
     requestType: "contact",
-    data: {
-      name: currentUser.displayName,
+    displayData: {
+      title: currentUser.displayName,
       photoURL: currentUser.photoURL,
-      uid: currentUser.uid,
     },
+    uid: currentUser.uid,
   };
 
   console.log(data);
@@ -51,14 +55,15 @@ export const createGroup = async (currentUser, toUsers, groupData) => {
     const chatRes = await push(chatRef, chatData);
     //upload group pfp to chatkey/groupPfp.png
     const groupPfpRef = storageRef(storage, `${chatRes.key}/groupPfp.jpeg`);
-    const uploadGroupPfpRes = await uploadBytes(groupPfpRef, groupData.pfpFile);
+    await uploadBytes(groupPfpRef, groupData.pfpFile);
+    const downloadURL = await getDownloadURL(groupPfpRef);
 
     //structure request data
     const requestData = {
       requestType: "group",
       displayData: {
         title: groupData.title,
-        photoPath: `${chatRes.key}/groupPfp.png`,
+        photoURL: downloadURL,
       },
       admin: {
         photoURL: currentUser.photoURL,
@@ -67,7 +72,7 @@ export const createGroup = async (currentUser, toUsers, groupData) => {
       },
       chatKey: chatRes.key,
     };
-    //chat requests for users
+    //send chat requests for users
     for (let i = 0; i < toUsers.length; i++) {
       const toUserRef = doc(firestore, `users/${toUsers[i]}`);
       batch.update(toUserRef, { requests: arrayUnion(requestData) });
@@ -75,8 +80,16 @@ export const createGroup = async (currentUser, toUsers, groupData) => {
     //add chatkey to CUID chats arr
     batch.update(currentuserRef, { chats: arrayUnion(chatRes.key) });
 
+    //add groupPfpURL to chatinfo
+    const chatDisplaydataRef = ref(
+      rtdb,
+      `chats/${chatRes.key}/info/displayData`
+    );
+    await update(chatDisplaydataRef, { photoURL: downloadURL });
+
     //commit batch
     const batchRes = await batch.commit();
+    console.log(batchRes);
     return;
   } catch (err) {
     return err.message;
@@ -123,6 +136,31 @@ export const acceptContactRequest = async (currentUser, acceptedUser) => {
     return batchRes;
   } catch (err) {
     return err;
+  }
+};
+
+export const acceptGroupRequest = async (currentUserID, chatKey) => {
+  const docRef = doc(firestore, `users/${currentUserID}`);
+  const chatUidsRef = ref(rtdb, `chats/${chatKey}/info/uids`);
+  const batch = writeBatch(firestore);
+
+  try {
+    //add to user chat list
+    batch.update(docRef, { chats: arrayUnion(chatKey) });
+
+    //get users request arr and filter out the current request
+    const docSnap = await getDoc(docRef);
+    const userReqArr = docSnap.data().requests;
+    const filteredArr = userReqArr.filter((obj) => obj.chatKey != chatKey);
+    //replace the req arr with the filtered
+    batch.update(docRef, { requests: filteredArr });
+
+    //add to chat uids arr
+    await push(chatUidsRef, currentUserID);
+    const batchRes = await batch.commit();
+    return;
+  } catch (error) {
+    return err.message;
   }
 };
 

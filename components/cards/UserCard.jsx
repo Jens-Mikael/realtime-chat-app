@@ -23,7 +23,11 @@ const UserCard = ({
       },
       { uid: uid }
     );
-    console.log(res);
+    if (res) {
+      console.log(res);
+    } else {
+      console.log("contact req was sent successfully");
+    }
   };
 
   const handleOnClick = () => {

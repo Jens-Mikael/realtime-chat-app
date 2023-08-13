@@ -5,6 +5,7 @@ import ContactSection from "@/components/sections/ContactSection";
 import ChatSection from "@/components/sections/ChatSection";
 import { useDispatch } from "react-redux";
 import { setCurrentChat } from "@/redux/slices/currentChatSlice";
+import { setChats } from "@/redux/slices/chatsSlice";
 
 export default function Home() {
   const { currentUser, logout, loading } = useAuth();
@@ -13,6 +14,7 @@ export default function Home() {
   const handleLogout = async () => {
     await logout();
     dispatch(setCurrentChat(null));
+    dispatch(setChats(null));
   };
 
   if (!loading && !currentUser) redirect("/auth");

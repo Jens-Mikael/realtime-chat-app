@@ -40,11 +40,12 @@ const MessageSection = ({ chatKey, isGroup }) => {
       } `}
     >
       {messages &&
-        Object.keys(messages).map((key, index) => (
+        Object.keys(messages).map((key) => (
           <MessageCard
             content={messages[key].data}
             sender={messages[key].sender}
             currentUID={uid}
+            isGroup={isGroup}
             timeStamp={messages[key].timeStamp}
             key={key}
           />
